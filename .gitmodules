@@ -1,0 +1,4 @@
+
+[submodule "quickjs/quickjs-sys/quickjs"]
+	path = quickjs/quickjs-sys/quickjs
+	url = ssh://git@ssh.github.com/bellard/quickjs.git
