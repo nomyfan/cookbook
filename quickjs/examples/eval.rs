@@ -8,7 +8,7 @@ mod quickjs {
 
 use quickjs::{
     JSContext, JSRuntime, JSValue, JS_Eval, JS_FreeCString, JS_FreeContext, JS_FreeRuntime,
-    JS_FreeValue__extern, JS_NewContext, JS_NewRuntime, JS_ToCStringLen2, JS_ToInt32,
+    JS_FreeValue__extern, JS_NewContext, JS_NewRuntime, JS_ToInt32,
 };
 
 #[derive(Debug)]
@@ -30,9 +30,7 @@ impl From<(*mut JSContext, JSValue)> for Value {
                 Value::Int(ret)
             }
             quickjs::JS_TAG_STRING => {
-                let str_ptr = unsafe {
-                    JS_ToCStringLen2(ctx, std::ptr::null::<usize>() as *mut usize, jsvalue, 0)
-                };
+                let str_ptr = unsafe { quickjs::JS_ToCString__extern(ctx, jsvalue) };
                 let str_value = unsafe { CStr::from_ptr(str_ptr).to_string_lossy().to_string() };
                 unsafe {
                     JS_FreeCString(ctx, str_ptr);
