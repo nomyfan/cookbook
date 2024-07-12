@@ -30,12 +30,14 @@ impl From<(*mut JSContext, JSValue)> for Value {
                 Value::Int(ret)
             }
             quickjs::JS_TAG_STRING => {
-                let str_ptr = unsafe { quickjs::JS_ToCString__extern(ctx, jsvalue) };
-                let str_value = unsafe { CStr::from_ptr(str_ptr).to_string_lossy().to_string() };
-                unsafe {
-                    JS_FreeCString(ctx, str_ptr);
-                }
-                Value::String(str_value)
+                let value = unsafe {
+                    let ptr = quickjs::JS_ToCString__extern(ctx, jsvalue);
+                    let value = CStr::from_ptr(ptr).to_string_lossy().to_string();
+                    JS_FreeCString(ctx, ptr);
+
+                    value
+                };
+                Value::String(value)
             }
             _ => unimplemented!(),
         };
